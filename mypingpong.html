@@ -1,1 +1,128 @@
-game
+ <html>
+ <head>
+ <title>Ping - Pong</title>
+ <style>
+  body{
+  background: black;
+  }
+ </style>
+ </head>
+ <body>
+ <canvas id="canvas" width="600" height="400">
+ </canvas>
+ <script>
+ 
+ var canvas = document.getElementById("canvas");
+ var ctx = canvas.getContext("2d");
+ 
+ var h = canvas.height
+ var w = canvas.width
+ 
+ var border = 20;
+ 
+ var tileW = 4;
+ var tileH =10;
+ var tileGap = 2;
+ 
+ var tileX = w/2 - tileW/2;
+ var tileY = 0;
+ var tileCount = h/ (tileH + tileGap);
+ 
+ var radiusBall = 6;
+ 
+ var gameSpeed =2;
+ 
+ //ball position
+ var xPosBall = 200;
+ var yPosBall = 300;
+ 
+ //ball speed
+ var xSpeedBall =  1;
+ var ySpeedBall = 1;
+ 
+ //ball direction
+ var xDirBall = -1;
+ var yDirBall = -1;
+ 
+ //pad handle
+ var xPad = w - 20;
+ var yPad = h/2;
+ 
+ //pad size
+ var padHeight = 20;
+ var padWidth = 6;
+ 
+ //pad direction
+ var padDir = 0;
+ 
+ //pad speed
+ var padSpeed= 2;
+ 
+ // draw tennis court
+ function draw(){
+ ctx.clearRect(0,0,w,h);
+ ctx.fillStyle = "coral";
+ ctx.fillRect(0,0,w,h);
+ 
+ ctx.fillStyle = "black";
+ for(var i=0; i < tileCount; i++){
+ tileY = i *(tileH + tileGap);
+ ctx.fillRect(tileX, tileY, tileW, tileH);
+ }
+ 
+ //paint the white wall
+ ctx.fillStyle = "white";
+ ctx.fillRect(0, 0, w, border);
+ ctx.fillRect(0, h - border, w, border);
+ ctx.fillRect(0,0,border,h);
+ 
+ //paint the ball
+ ctx.fillStyle = "yellow";
+ ctx.beginPath();
+ ctx.arc(xPosBall, yPosBall, radiusBall, 0, Math.PI * 2, false );
+ ctx.fill();
+ ctx.closePath();
+ 
+ //change of position of the ball
+ xPosBall = xPosBall + xSpeedBall * xDirBall;
+ yPosBall = yPosBall + ySpeedBall * yDirBall;
+ 
+ //when ball hits the left wall
+	if (xPosBall <= border + radiusBall){
+	xDirBall = 1;}
+	// the top
+	if (yPosBall <= border + radiusBall){
+	yDirBall = 1;}
+	// the bottom
+	if (yPosBall >= h - border - radiusBall){
+	yDirBall = -1;}
+	
+	//pad navigation
+	if (xPosBall >= yPad && yPosBall <= yPad + padHeight && xPosBall >= xPad && xPosBall <= xPad + padWidth){
+	xDirBall = -1;
+	}
+
+	// draw pad
+	ctx.fillStyle = "blue";
+	ctx.fillRect(xPad, yPad, padWidth, padHeight);
+	
+	yPad = yPad + padSpeed * padDir;
+	
+	document.onkeydown = function (e){
+	if(e.keyCode == 38){
+	padDir = -1; }
+	if (e.keyCode == 40){
+	padDir = 1;}}
+	
+	document.onkeyup = function(e){
+	if (e.keyCode == 38 || e.keyCode == 40){
+	padDir = 0;}}
+ }
+ setInterval(draw, gameSpeed);
+ 
+ 
+ </script>
+ </body>
+ 
+ 
+ </html>
